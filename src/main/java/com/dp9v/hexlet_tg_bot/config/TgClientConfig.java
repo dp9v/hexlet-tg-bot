@@ -14,7 +14,7 @@ public class TgClientConfig {
     private static final String TG_BOT_API_URL = "https://api.telegram.org/bot%s/";
 
     @Bean
-    public RestTemplate tgClient(
+    public RestTemplate tgRestTemplate(
             @Value("${tg.bot.timeout}") int timeout,
             @Value("${tg.bot.token}") String token,
             RestTemplateBuilder restTemplateBuilder

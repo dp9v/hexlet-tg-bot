@@ -3,3 +3,7 @@ spring.application.name: hexlet-tg-bot
 tg.bot:
   timeout: 10
   token: ${TG-BOT-TOKEN}
+
+spring:
+  kafka:
+    bootstrap-servers: "127.0.0.1:29092"
