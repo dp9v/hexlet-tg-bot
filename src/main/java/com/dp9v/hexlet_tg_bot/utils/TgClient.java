@@ -1,8 +1,6 @@
 package com.dp9v.hexlet_tg_bot.utils;
 
-import com.dp9v.hexlet_tg_bot.dto.ResponseMessage;
-import com.dp9v.hexlet_tg_bot.dto.Update;
-import com.dp9v.hexlet_tg_bot.dto.UpdateResponse;
+import com.dp9v.hexlet_tg_bot.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -25,7 +23,19 @@ public class TgClient {
     }
 
     public void sendMessage(String msg, Long chatId) {
-        var response = new ResponseMessage(chatId, msg);
+        sendMessage(msg, chatId, List.of());
+    }
+
+    public void sendMessage(String msg, Long chatId, List<String> buttons) {
+        var response = new ResponseMessage(chatId, msg, buildKeyboard(buttons));
         tgRestTemplate.postForEntity("/sendmessage", response, String.class);
+    }
+
+    private ReplyKeyboardMarkup buildKeyboard(List<String> buttons) {
+        return new ReplyKeyboardMarkup(
+                List.of(buttons.stream().map(KeyboardButton::new).toList()),
+                true,
+                true
+        );
     }
 }

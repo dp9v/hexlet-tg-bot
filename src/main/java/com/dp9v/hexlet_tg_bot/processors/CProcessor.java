@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +31,7 @@ public class CProcessor implements Processor {
         } else {
             tgClient.sendMessage("Решение уравнения: " + Arrays.toString(result), chatId);
         }
-        tgClient.sendMessage("Enter something", chatId);
+        tgClient.sendMessage("Enter something", chatId, DefaultProcessor.BUTTONS);
         return new ChatState(Status.DEFAULT, new ChatPayload());
     }
 

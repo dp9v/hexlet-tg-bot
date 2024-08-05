@@ -21,15 +21,17 @@ import java.util.stream.Collectors;
 @Service
 public class TgMainProcessor {
 
-    private final TgClient tgClient;
     private final ChatStateRepository chatStateRepository;
     private final Map<Status, Processor> processors;
 
-    public TgMainProcessor(TgClient tgClient, ChatStateRepository chatStateRepository, List<Processor> processors) {
-        this.tgClient = tgClient;
+    public TgMainProcessor(ChatStateRepository chatStateRepository, List<Processor> processors) {
         this.chatStateRepository = chatStateRepository;
         this.processors = processors.stream()
                 .collect(Collectors.toMap(Processor::getHandledStatus, Function.identity()));
+
+        if (!this.processors.containsKey(Status.DEFAULT) || !this.processors.containsKey(Status.ERROR)) {
+            throw new RuntimeException("No processors for required statuses.");
+        }
     }
 
     @SneakyThrows
@@ -44,8 +46,7 @@ public class TgMainProcessor {
         try {
             nextState = processors.get(state.getStatus()).process(state.getPayload(), update);
         } catch (Exception exception) {
-            tgClient.sendMessage("Произошла ошибка. \nВведите что-нибудь", chatId);
-            nextState = new ChatState(Status.DEFAULT, new ChatPayload());
+            nextState = processors.get(Status.ERROR).process(state.getPayload(), update);
         }
         chatStateRepository.updateState(chatId, nextState);
     }

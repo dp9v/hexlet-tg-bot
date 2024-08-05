@@ -2,7 +2,6 @@ package com.dp9v.hexlet_tg_bot.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 public class ResponseMessage {
@@ -11,5 +10,8 @@ public class ResponseMessage {
 
     @JsonProperty("text")
     private String text;
+
+    @JsonProperty("reply_markup")
+    private ReplyKeyboardMarkup replyMarkup;
 
 }
