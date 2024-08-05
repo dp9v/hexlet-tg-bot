@@ -8,6 +8,8 @@ import com.dp9v.hexlet_tg_bot.utils.ChatState;
 import com.dp9v.hexlet_tg_bot.utils.Status;
 import com.dp9v.hexlet_tg_bot.utils.TgClient;
 import lombok.SneakyThrows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 @Service
 public class TgMainProcessor {
 
+    private static final Logger log = LoggerFactory.getLogger(TgMainProcessor.class);
     private final ChatStateRepository chatStateRepository;
     private final Map<Status, Processor> processors;
 
@@ -42,12 +45,15 @@ public class TgMainProcessor {
         Long chatId = update.getMessage().getChat().getId();
         ChatState state = chatStateRepository.getState(chatId);
         ChatState nextState = null;
+        System.out.printf("Teкущий статус чата %d: %s%n", chatId, state.getStatus());
 
         try {
             nextState = processors.get(state.getStatus()).process(state.getPayload(), update);
         } catch (Exception exception) {
+            log.error("Some err", exception);
             nextState = processors.get(Status.ERROR).process(state.getPayload(), update);
         }
         chatStateRepository.updateState(chatId, nextState);
     }
 }
+

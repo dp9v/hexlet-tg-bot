@@ -25,6 +25,7 @@ public class BotPollingService {
     public void poll() {
         var updates = tgClient.getUpdates(offset.get());
         for (Update update : updates) {
+            System.out.println(update);
             kafkaTemplate.send("updates", update.getUpdateId().toString(), update);
             offset.set(update.getUpdateId() + 1);
         }
