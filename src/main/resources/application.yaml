@@ -2,7 +2,7 @@ spring.application.name: hexlet-tg-bot
 
 tg.bot:
   timeout: 10
-  token: ${TG-BOT-TOKEN}
+  token: ${TG_BOT_TOKEN}
 
 spring:
   kafka:
